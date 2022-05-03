@@ -31,15 +31,15 @@ use OCP\IRequest;
 
 class PageController extends Controller {
 	protected $appName;
-	
+
 	/** @var IEventDispatcher */
 	private $eventDispatcher;
-	
+
 	public function __construct($appName,
 								IRequest $request,
 								IEventDispatcher $eventDispatcher) {
 		parent::__construct($appName, $request);
-	
+
 		$this->appName = $appName;
 		$this->eventDispatcher = $eventDispatcher;
 	}
@@ -80,6 +80,14 @@ This will load all the necessary scripts and make the Viewer accessible trough j
   })
   ```
   The list parameter requires an array of fileinfo. You can check how we generate a fileinfo object [here](https://github.com/nextcloud/viewer/blob/master/src/utils/fileUtils.js#L97) from a dav PROPFIND request data. There is currently no dedicated package for it, but this is coming. You can check the [photos](https://github.com/nextcloud/photos) repository where we also uses it.
+
+In order to open a shared file you will need to provide the share token
+so the Viewer can use it to authenticate the requests to the server.
+See the `files_sharing` app
+[controller](https://github.com/nextcloud/server/blob/master/apps/files_sharing/lib/Controller/ShareController.php#L404)
+and
+[template](https://github.com/nextcloud/server/blob/master/apps/files_sharing/templates/public.php#L18)
+for an example.
 
 ### Close the viewer
 ```js
