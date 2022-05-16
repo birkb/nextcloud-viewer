@@ -22,7 +22,25 @@
  -->
 
 <template>
-	<Modal v-if="initiated || currentFile.modal"
+	<div id="viewer" v-if="el">
+		{{ this.el }}
+		<component :is="currentFile.modal"
+			v-if="!currentFile.failed"
+			:key="currentFile.fileid"
+			ref="content"
+			:active="true"
+			:can-swipe="false"
+			v-bind="currentFile"
+			:file-list="[currentFile]"
+			:is-full-screen="false"
+			:loaded.sync="currentFile.loaded"
+			:is-sidebar-shown="false"
+			class="viewer__file viewer__file--active"
+			@error="currentFailed" />
+		<Error v-else
+			:name="currentFile.basename" />
+	</div>
+	<Modal v-else-if="initiated || currentFile.modal"
 		id="viewer"
 		size="full"
 		:class="{'icon-loading': !currentFile.loaded && !currentFile.failed,
@@ -203,6 +221,9 @@ export default {
 		files() {
 			return this.Viewer.files
 		},
+		el() {
+			return this.Viewer.el
+		},
 		loadMore() {
 			return this.Viewer.loadMore
 		},
@@ -249,6 +270,23 @@ export default {
 	},
 
 	watch: {
+		el(element) {
+			logger.info(element)
+			this.$nextTick(() => {
+				const viewerRoot = document.getElementById('viewer')
+				if (element) {
+					const el = document.querySelector(element)
+					if (el) {
+						el.appendChild(viewerRoot)
+					} else {
+						logger.warn('Could not find element ', { element })
+					}
+				} else {
+					document.body.appendChild(viewerRoot)
+				}
+			})
+		},
+
 		file(path) {
 			// we got a valid path! Load file...
 			if (path.trim() !== '') {

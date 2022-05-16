@@ -58,6 +58,7 @@ if (window.OCA) {
 	OCA.Viewer.version = appVersion
 }
 
+
 // Create document root
 const ViewerRoot = document.createElement('div')
 ViewerRoot.id = 'viewer'

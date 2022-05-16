@@ -39,6 +39,7 @@ export default class Viewer {
 		this._state.onNext = () => {}
 		this._state.onClose = () => {}
 		this._state.canLoop = true
+		this._state.el = null
 		this._state.handlers = []
 
 		// ! built-in handlers
@@ -88,6 +89,16 @@ export default class Viewer {
 	 */
 	get files() {
 		return this._state.files
+	}
+
+	/**
+	 * Get the element to render the current file in
+	 *
+	 * @memberof Viewer
+	 * @return {string} selector of the element
+	 */
+	get el() {
+		return this._state.el
 	}
 
 	/**
@@ -157,13 +168,14 @@ export default class Viewer {
 	 * @param {object} options Options for opening the viewer
 	 * @param {string} options.path path of the file to open
 	 * @param {object[]} [options.list] the list of files as objects (fileinfo) format
+	 * @param {string} options.el selector of the element to render the file in
 	 * @param {Function} options.loadMore callback for loading more files
 	 * @param {boolean} options.canLoop can the viewer loop over the array
 	 * @param {Function} options.onPrev callback when navigating back to previous file
 	 * @param {Function} options.onNext callback when navigation forward to next file
 	 * @param {Function} options.onClose callback when closing the viewer
 	 */
-	open({ path, list = [], loadMore = () => ([]), canLoop = true, onPrev = () => {}, onNext = () => {}, onClose = () => {} } = {}) {
+	open({ path, list = [], el = null, loadMore = () => ([]), canLoop = true, onPrev = () => {}, onNext = () => {}, onClose = () => {} } = {}) {
 		if (typeof arguments[0] === 'string') {
 			throw new Error('Opening the viewer with a single string parameter is deprecated. Please use a destructuring object instead', `OCA.Viewer.open({ path: '${path}' })`)
 		}
@@ -187,6 +199,7 @@ export default class Viewer {
 		this._state.onNext = onNext
 		this._state.onClose = onClose
 		this._state.canLoop = canLoop
+		this._state.el = el
 	}
 
 	/**
