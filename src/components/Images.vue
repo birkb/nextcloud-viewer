@@ -153,7 +153,11 @@ export default {
 			this.disableSwipe()
 			this.shiftX = this.shiftX + Math.round(-scrollPercX * growX)
 			this.shiftY = this.shiftY + Math.round(-scrollPercY * growY)
-			this.zoomRatio = newZoomRatio
+
+			// only change zoomRatio when multiple files are in the fileList. Disable for single shared files
+			if (this.fileList.length > 1) {
+				this.zoomRatio = newZoomRatio
+			}
 		},
 
 		resetZoom() {
